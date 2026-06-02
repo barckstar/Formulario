@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuestionario — Coopehemp</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1a6b3a;
+    --green-light: #e8f5ed;
+    --green-mid: #2d8a50;
+    --text: #1a1a1a;
+    --text-muted: #5a5a5a;
+    --text-hint: #8a8a8a;
+    --border: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.25);
+    --bg: #fafaf8;
+    --card: #ffffff;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+  }
+
+  .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .logo-mark svg { width: 28px; height: 28px; color: var(--green); }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  /* Progress */
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* Section */
+  .section {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-num {
+    width: 22px;
+    height: 22px;
+    background: var(--green-light);
+    color: var(--green);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Question group */
+  .q-group {
+    margin-bottom: 1.75rem;
+  }
+
+  .q-group:last-child { margin-bottom: 0; }
+
+  .q-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .q-hint {
+    font-size: 13px;
+    color: var(--text-hint);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Pills */
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .pill:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .pill.selected {
+    background: var(--green-light);
+    border-color: var(--green-mid);
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .card-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 14px 16px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .card-pill:hover { border-color: var(--border-hover); }
+
+  .card-pill.selected {
+    background: var(--green-light);
+    border-color: var(--green-mid);
+  }
+
+  .card-pill .card-icon {
+    font-size: 20px;
+    color: var(--text-muted);
+  }
+
+  .card-pill.selected .card-icon { color: var(--green); }
+
+  .card-pill .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .card-pill .card-sub {
+    font-size: 11px;
+    color: var(--text-hint);
+    line-height: 1.4;
+  }
+
+  .card-pill.selected .card-sub { color: var(--green-mid); }
+
+  /* Textarea */
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  textarea:focus { border-color: var(--green-mid); }
+  textarea::placeholder { color: var(--text-hint); }
+
+  /* Other input */
+  .other-input {
+    margin-top: 8px;
+    display: none;
+  }
+
+  .other-input.visible { display: block; }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type="text"]:focus { border-color: var(--green-mid); }
+  input[type="text"]::placeholder { color: var(--text-hint); }
+
+  /* Checklist */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: var(--border-hover); }
+
+  .check-item.selected {
+    background: var(--green-light);
+    border-color: var(--green-mid);
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border-hover);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-item.selected .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-box svg {
+    width: 11px;
+    height: 11px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .check-item.selected .check-box svg { opacity: 1; }
+
+  .check-label { font-size: 14px; color: var(--text-muted); }
+  .check-item.selected .check-label { color: var(--green); font-weight: 500; }
+
+  /* Acceptance criteria table */
+  .criteria-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .criteria-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--green-light);
+    color: var(--green);
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .criteria-table td {
+    padding: 10px 12px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .criteria-table tr:last-child td { border-bottom: none; }
+
+  .tag-included {
+    display: inline-block;
+    background: #e8f5ed;
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .tag-excluded {
+    display: inline-block;
+    background: #fef3f2;
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Submit */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    margin-top: 1.25rem;
+  }
+
+  .footer p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-submit:hover { background: var(--green-mid); }
+
+  /* Result modal */
+  .result-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .result-overlay.visible { display: flex; }
+
+  .result-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 560px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .result-card h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--green);
+  }
+
+  .result-entry {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .result-entry:last-child { border-bottom: none; }
+  .result-entry strong { color: var(--text); }
+  .result-entry span { color: var(--text-muted); }
+
+  .btn-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-light);
+    color: var(--green);
+    border: 0.5px solid var(--green-mid);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.15s;
+  }
+
+  .btn-copy:hover { background: #d4edd9; }
+
+  .btn-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: var(--text-muted);
+    border: 0.5px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 8px;
+    transition: background 0.15s;
+  }
+
+  .btn-close:hover { background: var(--bg); }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .header h1 { font-size: 18px; }
+    .section { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a9 9 0 0 1 0 18"/>
+        <path d="M12 2a9 9 0 0 0 0 18"/>
+        <path d="M12 2v18"/>
+        <path d="M4.5 7h15"/>
+        <path d="M4.5 17h15"/>
+      </svg>
+    </div>
+    <span class="badge">Cuestionario de proyecto web</span>
+    <h1>Cooperativa de Cáñamo — Coopehemp</h1>
+    <p>Este formulario nos permite entender su visión, necesidades y alcance para desarrollar un sitio web profesional que los represente como la cooperativa de cáñamo más importante del país.</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <!-- SECCIÓN 1: Visión y objetivos -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">1</span> Visión y objetivos</div>
+
+    <div class="q-group">
+      <div class="q-label">¿Cuál es el objetivo principal de la nueva página web?</div>
+      <div class="cards" data-name="objetivo" data-multi="false">
+        <button type="button" class="card-pill" data-value="Presencia institucional">
+          <span class="card-icon">🏛️</span>
+          <span class="card-title">Presencia institucional</span>
+          <span class="card-sub">Quiénes somos, misión, historia</span>
+        </button>
+        <button type="button" class="card-pill" data-value="Comercializar productos">
+          <span class="card-icon">🛒</span>
+          <span class="card-title">Comercializar productos</span>
+          <span class="card-sub">Tienda o catálogo de productos</span>
+        </button>
+        <button type="button" class="card-pill" data-value="Atraer inversionistas">
+          <span class="card-icon">📈</span>
+          <span class="card-title">Atraer inversionistas</span>
+          <span class="card-sub">Aliados estratégicos</span>
+        </button>
+        <button type="button" class="card-pill" data-value="Todos estos objetivos">
+          <span class="card-icon">🎯</span>
+          <span class="card-title">Todos estos objetivos</span>
+          <span class="card-sub">Presencia + venta + inversión</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿A quién va dirigida principalmente la página?</div>
+      <div class="q-hint">Puede seleccionar varios públicos.</div>
+      <div class="pills" data-name="publico" data-multi="true">
+        <button type="button" class="pill" data-value="Consumidores finales">Consumidores finales</button>
+        <button type="button" class="pill" data-value="Turistas">Turistas</button>
+        <button type="button" class="pill" data-value="Inversionistas">Inversionistas</button>
+        <button type="button" class="pill" data-value="Medios de comunicación">Medios de comunicación</button>
+        <button type="button" class="pill" data-value="Cooperativistas internos">Cooperativistas internos</button>
+        <button type="button" class="pill" data-value="Profesionales de salud">Profesionales de salud</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Qué sitios web admiran o tomarían como referencia estética?</div>
+      <textarea data-name="referencias" placeholder="Ej: sitios de cooperativas internacionales, marcas de bienestar, organizaciones ambientales..."></textarea>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: Contenido y secciones -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">2</span> Contenido y secciones</div>
+
+    <div class="q-group">
+      <div class="q-label">¿Qué secciones consideran imprescindibles para el sitio?</div>
+      <div class="q-hint">Puede seleccionar varias.</div>
+      <div class="checklist" data-name="secciones" data-multi="true">
+        <div class="check-item" data-value="Sobre la cooperativa">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Sobre la cooperativa (historia, misión, valores)</span>
+        </div>
+        <div class="check-item" data-value="Directorio de cooperativistas">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Directorio de cooperativistas y sus negocios</span>
+        </div>
+        <div class="check-item" data-value="Catálogo de productos">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Catálogo de productos cáñamo</span>
+        </div>
+        <div class="check-item" data-value="Mapa de expendedoras">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Mapa de máquinas expendedoras</span>
+        </div>
+        <div class="check-item" data-value="Seguro cáñamo">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Información sobre el seguro cáñamo</span>
+        </div>
+        <div class="check-item" data-value="Transparencia y documentos">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Transparencia y documentos institucionales</span>
+        </div>
+        <div class="check-item" data-value="Noticias / Blog">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Noticias / Blog</span>
+        </div>
+        <div class="check-item" data-value="Foro o comunidad">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Foro o comunidad (fase futura)</span>
+        </div>
+        <div class="check-item" data-value="Contacto">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Formulario de contacto</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Tienen intención de vender productos en línea?</div>
+      <div class="pills" data-name="ecommerce" data-multi="false">
+        <button type="button" class="pill" data-value="Sí, en esta fase">Sí, en esta fase</button>
+        <button type="button" class="pill" data-value="En fase futura">En fase futura</button>
+        <button type="button" class="pill" data-value="Solo catálogo sin compra">Solo catálogo, sin compra</button>
+        <button type="button" class="pill" data-value="No por ahora">No por ahora</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿En qué idiomas debe estar disponible el sitio?</div>
+      <div class="pills" data-name="idiomas" data-multi="true">
+        <button type="button" class="pill" data-value="Español">🇨🇷 Español</button>
+        <button type="button" class="pill" data-value="Inglés">🇺🇸 Inglés</button>
+        <button type="button" class="pill" data-value="Otro" id="pill-otro-idioma">Otro</button>
+      </div>
+      <div class="other-input" id="other-idioma">
+        <input type="text" placeholder="¿Cuál idioma?" data-name="idiomas_otro">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: Identidad y material -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">3</span> Identidad visual y material</div>
+
+    <div class="q-group">
+      <div class="q-label">¿Tienen identidad visual definida?</div>
+      <div class="pills" data-name="identidad" data-multi="false">
+        <button type="button" class="pill" data-value="Sí, completa (logo, colores, tipografía)">Sí, completa</button>
+        <button type="button" class="pill" data-value="Parcial, solo logo">Solo logo</button>
+        <button type="button" class="pill" data-value="No, necesitamos propuesta">No, necesitamos propuesta</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Disponen de fotografías o material visual propio?</div>
+      <div class="pills" data-name="fotos" data-multi="false">
+        <button type="button" class="pill" data-value="Sí, galería completa">Sí, galería completa</button>
+        <button type="button" class="pill" data-value="Algunas fotos">Algunas fotos</button>
+        <button type="button" class="pill" data-value="No, necesitamos sesión fotográfica">No, necesitamos sesión fotográfica</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Tienen algún tono de comunicación que la página debe reflejar?</div>
+      <div class="pills" data-name="tono" data-multi="true">
+        <button type="button" class="pill" data-value="Profesional e institucional">Profesional e institucional</button>
+        <button type="button" class="pill" data-value="Cercano y comunitario">Cercano y comunitario</button>
+        <button type="button" class="pill" data-value="Innovador y tecnológico">Innovador y tecnológico</button>
+        <button type="button" class="pill" data-value="Natural y sostenible">Natural y sostenible</button>
+        <button type="button" class="pill" data-value="Médico y confiable">Médico y confiable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: Plazos y presupuesto -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">4</span> Plazos y logística</div>
+
+    <div class="q-group">
+      <div class="q-label">¿Con qué urgencia necesitan el sitio funcionando?</div>
+      <div class="pills" data-name="urgencia" data-multi="false">
+        <button type="button" class="pill" data-value="En 1 mes">En 1 mes</button>
+        <button type="button" class="pill" data-value="En 2-3 meses">En 2–3 meses</button>
+        <button type="button" class="pill" data-value="Más de 3 meses">Más de 3 meses</button>
+        <button type="button" class="pill" data-value="Sin fecha definida">Sin fecha definida</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿El presupuesto para este proyecto está aprobado?</div>
+      <div class="pills" data-name="presupuesto" data-multi="false">
+        <button type="button" class="pill" data-value="Sí, aprobado">Sí, aprobado</button>
+        <button type="button" class="pill" data-value="En proceso de aprobación">En proceso de aprobación</button>
+        <button type="button" class="pill" data-value="Pendiente de definir">Pendiente de definir</button>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Quién será el punto de contacto principal con el desarrollador?</div>
+      <textarea data-name="contacto_principal" placeholder="Nombre, cargo y correo de la persona encargada de este proyecto dentro de la cooperativa..."></textarea>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: Requerimientos y criterios de aceptación -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">5</span> Requerimientos de entrega</div>
+
+    <div class="q-group">
+      <div class="q-label">Alcance del MVP — lo que incluye el proyecto</div>
+      <div class="q-hint">Estas son las páginas y funcionalidades que se entregarán en la primera versión del sitio.</div>
+      <table class="criteria-table">
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th>Estado</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Home / Landing</strong></td>
+            <td><span class="tag-included">Incluido</span></td>
+            <td>Página principal con presentación de la cooperativa</td>
+          </tr>
+          <tr>
+            <td><strong>Página institucional</strong></td>
+            <td><span class="tag-included">Incluido</span></td>
+            <td>Historia, misión, visión, estructura</td>
+          </tr>
+          <tr>
+            <td><strong>Directorio de cooperativistas</strong></td>
+            <td><span class="tag-included">Incluido</span></td>
+            <td>Perfiles de miembros y sus negocios</td>
+          </tr>
+          <tr>
+            <td><strong>Catálogo de productos</strong></td>
+            <td><span class="tag-included">Incluido</span></td>
+            <td>Presentación visual de productos (sin carrito de compras)</td>
+          </tr>
+          <tr>
+            <td><strong>Mapa de expendedoras</strong></td>
+            <td><span class="tag-included">Incluido</span></td>
+            <td>Localizador interactivo en zonas turísticas</td>
+          </tr>
+          <tr>
+            <td><strong>E-commerce completo</strong></td>
+            <td><span class="tag-excluded">Fase 2</span></td>
+            <td>Carrito, pagos y gestión de pedidos</td>
+          </tr>
+          <tr>
+            <td><strong>Foro / comunidad</strong></td>
+            <td><span class="tag-excluded">Fase 2</span></td>
+            <td>Requiere desarrollo adicional</td>
+          </tr>
+          <tr>
+            <td><strong>App móvil</strong></td>
+            <td><span class="tag-excluded">Fuera de alcance</span></td>
+            <td>No contemplado en este contrato</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">Criterios técnicos mínimos para la aceptación del proyecto</div>
+      <div class="q-hint">El sitio debe cumplir todos estos criterios para considerarse entregado.</div>
+      <div class="checklist">
+        <div class="check-item selected" style="pointer-events:none;" data-value="">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Lighthouse Performance ≥ 90 en desktop y mobile</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">SEO básico configurado (meta tags, Open Graph, sitemap)</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Diseño responsive para móvil, tablet y escritorio</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Tiempo de carga menor a 3 segundos</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Accesibilidad WCAG AA</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">HTTPS habilitado con dominio propio configurado</span>
+        </div>
+        <div class="check-item selected" style="pointer-events:none;">
+          <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+          <span class="check-label">Hasta 3 rondas de revisión incluidas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="q-label">¿Tienen algún requerimiento técnico adicional o restricción?</div>
+      <textarea data-name="req_adicionales" placeholder="Por ejemplo: integración con redes sociales específicas, idioma del panel de administración, accesibilidad para algún usuario en particular, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- Sección 6: Visión adicional -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">6</span> Visión y comentarios finales</div>
+    <div class="q-group">
+      <div class="q-label">¿Hay algo más que quieran comunicar sobre la visión del proyecto?</div>
+      <textarea data-name="vision" placeholder="Ideas, contexto especial, restricciones legales del sector cáñamo en Costa Rica, o cualquier información relevante para el desarrollador..." style="min-height:120px;"></textarea>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Al terminar, presione el botón para copiar sus respuestas y enviarlas por WhatsApp.</p>
+    <button type="button" class="btn-submit" onclick="enviarWhatsApp()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.583 3.842 1.59 5.395L2 22l4.735-1.55A9.954 9.954 0 0 0 12 22c5.522 0 10-4.477 10-10S17.521 2 11.999 2zm0 18.16a8.16 8.16 0 0 1-4.155-1.132l-.298-.177-3.085 1.009.935-2.99-.194-.308A8.16 8.16 0 1 1 12 20.16z"/></svg>
+      Copiar y enviar por WhatsApp
+    </button>
+    <p id="copy-hint" style="font-size:13px;color:#888;margin-top:12px;display:none;">
+      ✅ Respuestas copiadas — WhatsApp abrirá con el mensaje listo. Solo presione <strong>Enviar</strong>.
+    </p>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+  const answers = {};
+
+  const LABELS = {
+    objetivo:           'Objetivo principal',
+    publico:            'Público objetivo',
+    referencias:        'Referencias estéticas',
+    secciones:          'Secciones requeridas',
+    ecommerce:          'E-commerce / Venta en línea',
+    idiomas:            'Idiomas del sitio',
+    identidad:          'Identidad visual',
+    fotos:              'Material fotográfico',
+    tono:               'Tono de comunicación',
+    urgencia:           'Urgencia de entrega',
+    presupuesto:        'Presupuesto',
+    contacto_principal: 'Contacto principal',
+    req_adicionales:    'Requerimientos adicionales',
+    vision:             'Visión / comentarios finales'
+  };
+
+  // Pills, cards y checklist
+  document.querySelectorAll('[data-multi]').forEach(group => {
+    const isMulti = group.dataset.multi === 'true';
+    const name = group.dataset.name;
+
+    group.querySelectorAll('.pill, .card-pill, .check-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.value;
+        if (!isMulti) {
+          group.querySelectorAll('.pill, .card-pill, .check-item').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          answers[name] = val;
+        } else {
+          btn.classList.toggle('selected');
+          answers[name] = [...group.querySelectorAll('.pill.selected, .card-pill.selected, .check-item.selected')]
+            .map(b => b.dataset.value);
+        }
+        if (name === 'idiomas' && val === 'Otro') {
+          document.getElementById('other-idioma').classList.toggle('visible', btn.classList.contains('selected'));
+        }
+        updateProgress();
+      });
+    });
+  });
+
+  document.querySelectorAll('textarea').forEach(ta => {
+    ta.addEventListener('input', () => {
+      if (ta.dataset.name) answers[ta.dataset.name] = ta.value.trim();
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('input[type="text"]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      if (inp.dataset.name) answers[inp.dataset.name] = inp.value.trim();
+    });
+  });
+
+  function updateProgress() {
+    const total = 12;
+    const filled = Object.values(answers).filter(v => v && (Array.isArray(v) ? v.length > 0 : v !== '')).length;
+    document.getElementById('progress').style.width = Math.min(100, Math.round((filled / total) * 100)) + '%';
+  }
+
+  function buildText() {
+    let text = '🌿 CUESTIONARIO COOPEHEMP\n';
+    text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+    for (const [key, label] of Object.entries(LABELS)) {
+      const val = answers[key];
+      if (!val || (Array.isArray(val) && val.length === 0)) continue;
+      const display = Array.isArray(val) ? val.join(', ') : val;
+      text += `*${label}:*\n${display}\n\n`;
+    }
+    text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+    text += 'Enviado desde el cuestionario de Leonel Castro González';
+    return text;
+  }
+
+  // Copia compatible con iOS (usa textarea trick como fallback)
+  function copiarTexto(text) {
+    return new Promise((resolve, reject) => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(resolve).catch(() => fallback(text, resolve, reject));
+      } else {
+        fallback(text, resolve, reject);
+      }
+    });
+  }
+
+  function fallback(text, resolve, reject) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      resolve();
+    } catch(e) {
+      document.body.removeChild(ta);
+      reject(e);
+    }
+  }
+
+  function enviarWhatsApp() {
+    const text = buildText();
+    const phone = '50664397918';
+
+    copiarTexto(text).then(() => {
+      // Mostrar hint
+      document.getElementById('copy-hint').style.display = 'block';
+
+      // Abrir WhatsApp con el texto pre-llenado
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+
+      // Cambiar botón temporalmente
+      const btn = document.querySelector('.btn-submit');
+      btn.innerHTML = '✅ Abierto en WhatsApp';
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.583 3.842 1.59 5.395L2 22l4.735-1.55A9.954 9.954 0 0 0 12 22c5.522 0 10-4.477 10-10S17.521 2 11.999 2zm0 18.16a8.16 8.16 0 0 1-4.155-1.132l-.298-.177-3.085 1.009.935-2.99-.194-.308A8.16 8.16 0 1 1 12 20.16z"/></svg> Copiar y enviar por WhatsApp`;
+      }, 4000);
+    }).catch(() => {
+      // Si falla el clipboard, igual abrir WhatsApp
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+    });
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
